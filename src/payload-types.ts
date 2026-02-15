@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    fornitori: Fornitori;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +79,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    fornitori: FornitoriSelect<false> | FornitoriSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -160,6 +162,26 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fornitori".
+ */
+export interface Fornitori {
+  id: number;
+  nomeAzienda: string;
+  contattoNome: string;
+  contattoCognome: string;
+  telefono: string;
+  email: string;
+  /**
+   * URL del QR
+   */
+  qrLink?: string | null;
+  qrImage?: (number | null) | Media;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -189,6 +211,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'fornitori';
+        value: number | Fornitori;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -271,6 +297,22 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fornitori_select".
+ */
+export interface FornitoriSelect<T extends boolean = true> {
+  nomeAzienda?: T;
+  contattoNome?: T;
+  contattoCognome?: T;
+  telefono?: T;
+  email?: T;
+  qrLink?: T;
+  qrImage?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
