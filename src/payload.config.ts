@@ -1,6 +1,7 @@
 import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { Condomini } from './collections/Condomini'
 import { Fornitori } from './collections/Fornitori'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -26,7 +27,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, Fornitori],
+  collections: [Users, Media, Fornitori, Condomini],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

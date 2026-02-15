@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     fornitori: Fornitori;
+    condomini: Condomini;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     fornitori: FornitoriSelect<false> | FornitoriSelect<true>;
+    condomini: CondominiSelect<false> | CondominiSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -192,6 +194,17 @@ export interface Fornitori {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "condomini".
+ */
+export interface Condomini {
+  id: number;
+  nomeCondominio: string;
+  fornitori: (number | Fornitori)[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -225,6 +238,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'fornitori';
         value: number | Fornitori;
+      } | null)
+    | ({
+        relationTo: 'condomini';
+        value: number | Condomini;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -322,6 +339,16 @@ export interface FornitoriSelect<T extends boolean = true> {
   qrLink?: T;
   qrImage?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "condomini_select".
+ */
+export interface CondominiSelect<T extends boolean = true> {
+  nomeCondominio?: T;
+  fornitori?: T;
   updatedAt?: T;
   createdAt?: T;
 }
