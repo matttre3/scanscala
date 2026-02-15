@@ -5,16 +5,17 @@ import config from '@payload-config'
 export const dynamic = 'force-dynamic'
 
 type PageArgs = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export default async function FornitorePage({ params }: PageArgs) {
+  const { slug } = await params
   const payload = await getPayload({ config })
   const { docs } = await payload.find({
     collection: 'fornitori',
-    where: { slug: { equals: params.slug } },
+    where: { slug: { equals: slug } },
     limit: 1,
   })
 
