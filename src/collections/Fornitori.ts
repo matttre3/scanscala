@@ -2,14 +2,32 @@ import type { CollectionConfig } from 'payload'
 import QRCode from 'qrcode'
 import slugify from 'slugify'
 
+const supplierTypes = [
+  'Elettricista',
+  'impresa edile',
+  'idraulico',
+  'ascensorista',
+  'manutentore',
+  'caldaia',
+  'spurghi',
+  'fabbro',
+  'amministratore',
+]
+
 export const Fornitori: CollectionConfig = {
   slug: 'fornitori',
   admin: {
     useAsTitle: 'nomeAzienda',
-    defaultColumns: ['nomeAzienda', 'contattoNome', 'contattoCognome', 'telefono', 'email'],
+    defaultColumns: ['nomeAzienda', 'type', 'contattoNome', 'contattoCognome', 'telefono', 'email'],
   },
   fields: [
     { name: 'nomeAzienda', type: 'text', required: true },
+    {
+      name: 'type',
+      type: 'select',
+      options: supplierTypes,
+      required: true,
+    },
     { name: 'contattoNome', type: 'text', required: true },
     { name: 'contattoCognome', type: 'text', required: true },
     { name: 'telefono', type: 'text', required: true },

@@ -167,6 +167,16 @@ export interface Media {
 export interface Fornitori {
   id: number;
   nomeAzienda: string;
+  type:
+    | 'Elettricista'
+    | 'impresa edile'
+    | 'idraulico'
+    | 'ascensorista'
+    | 'manutentore'
+    | 'caldaia'
+    | 'spurghi'
+    | 'fabbro'
+    | 'amministratore';
   contattoNome: string;
   contattoCognome: string;
   telefono: string;
@@ -304,6 +314,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface FornitoriSelect<T extends boolean = true> {
   nomeAzienda?: T;
+  type?: T;
   contattoNome?: T;
   contattoCognome?: T;
   telefono?: T;
