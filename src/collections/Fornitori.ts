@@ -4,14 +4,14 @@ import slugify from 'slugify'
 
 const supplierTypes = [
   'Elettricista',
-  'impresa edile',
-  'idraulico',
-  'ascensorista',
-  'manutentore',
-  'caldaia',
-  'spurghi',
-  'fabbro',
-  'amministratore',
+  'Impresa Edile',
+  'Idraulico',
+  'Ascensorista',
+  'Manutentore',
+  'Caldaista',
+  'Spurghi',
+  'Fabbro',
+  'Amministratore',
 ]
 
 export const Fornitori: CollectionConfig = {

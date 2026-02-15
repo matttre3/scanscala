@@ -19,6 +19,12 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      graphics: {
+        Icon: '/components/admin/BrandIcon',
+        Logo: '/components/admin/BrandLogo',
+      },
+    },
   },
   collections: [Users, Media, Fornitori],
   editor: lexicalEditor(),

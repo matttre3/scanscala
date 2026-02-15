@@ -158,20 +158,28 @@ function TypeIcon({ typeValue }: { typeValue: null | string | undefined }) {
   switch (typeValue) {
     case 'Elettricista':
       return <BoltIcon />
+    case 'Impresa Edile':
     case 'impresa edile':
       return <CraneIcon />
+    case 'Idraulico':
     case 'idraulico':
       return <DropletIcon />
+    case 'Ascensorista':
     case 'ascensorista':
       return <ElevatorIcon />
+    case 'Manutentore':
     case 'manutentore':
       return <WrenchIcon />
+    case 'Caldaista':
     case 'caldaia':
       return <FlameIcon />
+    case 'Spurghi':
     case 'spurghi':
       return <DrainIcon />
+    case 'Fabbro':
     case 'fabbro':
       return <KeyIcon />
+    case 'Amministratore':
     case 'amministratore':
       return <ShieldIcon />
     default:

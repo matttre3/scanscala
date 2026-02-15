@@ -169,14 +169,14 @@ export interface Fornitori {
   nomeAzienda: string;
   type:
     | 'Elettricista'
-    | 'impresa edile'
-    | 'idraulico'
-    | 'ascensorista'
-    | 'manutentore'
-    | 'caldaia'
-    | 'spurghi'
-    | 'fabbro'
-    | 'amministratore';
+    | 'Impresa Edile'
+    | 'Idraulico'
+    | 'Ascensorista'
+    | 'Manutentore'
+    | 'Caldaista'
+    | 'Spurghi'
+    | 'Fabbro'
+    | 'Amministratore';
   contattoNome: string;
   contattoCognome: string;
   telefono: string;
