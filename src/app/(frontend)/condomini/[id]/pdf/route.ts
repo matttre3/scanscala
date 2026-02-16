@@ -388,14 +388,6 @@ export async function GET(
     y: 0,
   })
 
-  page.drawRectangle({
-    color: rgb(0.9, 0.98, 0.95),
-    height: 34,
-    width: pageWidth,
-    x: 0,
-    y: pageHeight - 34,
-  })
-
   page.drawText('Scheda Fornitori Condominio', {
     color: rgb(0.06, 0.2, 0.18),
     font: helveticaBold,
@@ -418,8 +410,8 @@ export async function GET(
     const logoPath = path.join(process.cwd(), 'public', 'brand', 'logo-pr.jpeg')
     const logoBytes = await readFile(logoPath)
     const logoImage = await pdf.embedJpg(logoBytes)
-    const maxLogoWidth = 120
-    const maxLogoHeight = 30
+    const maxLogoWidth = 150
+    const maxLogoHeight = 38
     const scaled = logoImage.scale(1)
     const ratio = Math.min(maxLogoWidth / scaled.width, maxLogoHeight / scaled.height)
     const logoWidth = scaled.width * ratio
@@ -429,7 +421,7 @@ export async function GET(
       height: logoHeight,
       width: logoWidth,
       x: pageWidth - margin - logoWidth,
-      y: pageHeight - margin - 22,
+      y: pageHeight - margin - 24,
     })
   } catch {}
 
@@ -444,13 +436,15 @@ export async function GET(
   const cardPadding = 12
   const nameFontSize = 11
   const nameLineHeight = 13
+  const detailLineHeight = 11
+  const detailFontSize = 8.8
   const contentGap = 10
   const textColumnWidth = cardWidth - cardPadding * 2 - qrSize - contentGap
   const nameLinesList = shown.map((fornitore) =>
     wrapText(fornitore.nomeAzienda || `Fornitore #${fornitore.id}`, helveticaBold, nameFontSize, textColumnWidth, 3),
   )
   const maxNameLines = Math.max(...nameLinesList.map((lines) => lines.length), 1)
-  const cardHeight = Math.max(108, 92 + (maxNameLines - 1) * nameLineHeight)
+  const cardHeight = Math.max(144, 128 + (maxNameLines - 1) * nameLineHeight)
 
   const baseURL = process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin
 
@@ -536,6 +530,51 @@ export async function GET(
       size: chipFontSize,
       x: nameX + 7,
       y: chipY + 4,
+    })
+
+    const contactFullName = [fornitore.contattoNome, fornitore.contattoCognome].filter(Boolean).join(' ')
+    const infoRows = [
+      {
+        label: 'Referente',
+        value: contactFullName || '-',
+      },
+      {
+        label: 'Email',
+        value: fornitore.email || '-',
+      },
+      {
+        label: 'Telefono',
+        value: fornitore.telefono || '-',
+      },
+    ]
+
+    let infoY = chipY - 12
+    const labelColor = rgb(0.38, 0.46, 0.43)
+    const valueColor = rgb(0.11, 0.17, 0.15)
+    const labelWidth = 35
+    const valueMaxWidth = textColumnWidth - labelWidth
+
+    infoRows.forEach((rowData) => {
+      const label = `${rowData.label}:`
+      const value = truncateText(rowData.value, helvetica, detailFontSize, valueMaxWidth)
+
+      page.drawText(label, {
+        color: labelColor,
+        font: helvetica,
+        size: detailFontSize,
+        x: nameX,
+        y: infoY,
+      })
+
+      page.drawText(value, {
+        color: valueColor,
+        font: helveticaBold,
+        size: detailFontSize,
+        x: nameX + labelWidth,
+        y: infoY,
+      })
+
+      infoY -= detailLineHeight
     })
 
     const qrImageUrl =
