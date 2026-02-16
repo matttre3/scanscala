@@ -16,6 +16,10 @@ const supplierTypes = [
 
 export const Fornitori: CollectionConfig = {
   slug: 'fornitori',
+  labels: {
+    singular: 'Fornitore',
+    plural: 'Fornitori',
+  },
   admin: {
     useAsTitle: 'nomeAzienda',
     defaultColumns: ['nomeAzienda', 'type', 'contattoNome', 'contattoCognome', 'telefono', 'email'],
