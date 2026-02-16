@@ -2,6 +2,8 @@ import type { Fornitori } from '@/payload-types'
 import config from '@payload-config'
 import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFPage } from 'pdf-lib'
 import { getPayload } from 'payload'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import slugify from 'slugify'
 
 type RGB = [number, number, number]
@@ -411,6 +413,25 @@ export async function GET(
     x: margin,
     y: pageHeight - margin - 24,
   })
+
+  try {
+    const logoPath = path.join(process.cwd(), 'public', 'brand', 'logo-pr.jpeg')
+    const logoBytes = await readFile(logoPath)
+    const logoImage = await pdf.embedJpg(logoBytes)
+    const maxLogoWidth = 120
+    const maxLogoHeight = 30
+    const scaled = logoImage.scale(1)
+    const ratio = Math.min(maxLogoWidth / scaled.width, maxLogoHeight / scaled.height)
+    const logoWidth = scaled.width * ratio
+    const logoHeight = scaled.height * ratio
+
+    page.drawImage(logoImage, {
+      height: logoHeight,
+      width: logoWidth,
+      x: pageWidth - margin - logoWidth,
+      y: pageHeight - margin - 22,
+    })
+  } catch {}
 
   const columns = 2
   const cardGapX = 14
