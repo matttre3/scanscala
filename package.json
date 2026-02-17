@@ -23,6 +23,7 @@
     "@payloadcms/richtext-lexical": "3.76.1",
     "@payloadcms/storage-vercel-blob": "^3.76.1",
     "@payloadcms/ui": "3.76.1",
+    "@pdf-lib/fontkit": "^1.1.1",
     "@vercel/blob": "^2.2.0",
     "cross-env": "^7.0.3",
     "dotenv": "16.4.7",

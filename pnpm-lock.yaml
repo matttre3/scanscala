@@ -23,6 +23,9 @@ importers:
       '@payloadcms/ui':
         specifier: 3.76.1
         version: 3.76.1(@types/react@19.2.9)(monaco-editor@0.55.1)(next@15.4.11(@babel/core@7.29.0)(@playwright/test@1.58.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.76.1(bufferutil@4.1.0)(graphql@16.12.0)(typescript@5.7.3)(utf-8-validate@6.0.6))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
+      '@pdf-lib/fontkit':
+        specifier: ^1.1.1
+        version: 1.1.1
       '@vercel/blob':
         specifier: ^2.2.0
         version: 2.2.0
@@ -1449,6 +1452,9 @@ packages:
       payload: 3.76.1
       react: ^19.0.1 || ^19.1.2 || ^19.2.1
       react-dom: ^19.0.1 || ^19.1.2 || ^19.2.1
+
+  '@pdf-lib/fontkit@1.1.1':
+    resolution: {integrity: sha512-KjMd7grNapIWS/Dm0gvfHEilSyAmeLvrEGVcqLGi0VYebuqqzTbgF29efCx7tvx+IEbG3zQciRSWl3GkUSvjZg==}
 
   '@pdf-lib/standard-fonts@1.0.0':
     resolution: {integrity: sha512-hU30BK9IUN/su0Mn9VdlVKsWBS6GyhVfqjwl1FjZN4TxP6cCw0jP2w7V3Hf5uX7M0AZJ16vey9yE0ny7Sa59ZA==}
@@ -5973,6 +5979,10 @@ snapshots:
       - monaco-editor
       - supports-color
       - typescript
+
+  '@pdf-lib/fontkit@1.1.1':
+    dependencies:
+      pako: 1.0.11
 
   '@pdf-lib/standard-fonts@1.0.0':
     dependencies:
