@@ -40,6 +40,7 @@ export default buildConfig({
       connectionString: process.env.POSTGRES_URL || '',
     },
     prodMigrations: migrations,
+    push: false,
   }),
   onInit: async (payload) => {
     if (process.env.NEXT_PHASE === 'phase-production-build') return
