@@ -2,18 +2,6 @@ import type { CollectionConfig } from 'payload'
 import QRCode from 'qrcode'
 import slugify from 'slugify'
 
-const supplierTypes = [
-  'Elettricista',
-  'Impresa Edile',
-  'Idraulico',
-  'Ascensorista',
-  'Manutentore',
-  'Caldaista',
-  'Spurghi',
-  'Fabbro',
-  'Amministratore',
-]
-
 export const Fornitori: CollectionConfig = {
   slug: 'fornitori',
   labels: {
@@ -22,15 +10,30 @@ export const Fornitori: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'nomeAzienda',
-    defaultColumns: ['nomeAzienda', 'type', 'contattoNome', 'contattoCognome', 'telefono', 'email'],
+    defaultColumns: ['nomeAzienda', 'tipologia', 'contattoNome', 'contattoCognome', 'telefono', 'email'],
   },
   fields: [
     { name: 'nomeAzienda', type: 'text', required: true },
     {
+      name: 'tipologia',
+      type: 'relationship',
+      relationTo: 'tipologie-fornitori',
+      required: false,
+      maxDepth: 1,
+      admin: {
+        description: 'Tipologia gestibile dalla collection Tipologie Fornitori.',
+      },
+    },
+    {
       name: 'type',
-      type: 'select',
-      options: supplierTypes,
-      required: true,
+      type: 'text',
+      required: false,
+      admin: {
+        hidden: true,
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Campo legacy usato solo come fallback per i vecchi fornitori.',
+      },
     },
     { name: 'contattoNome', type: 'text', required: true },
     { name: 'contattoCognome', type: 'text', required: true },

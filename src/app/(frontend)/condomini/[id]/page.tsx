@@ -1,4 +1,5 @@
 import type { Fornitori } from '@/payload-types'
+import { getSupplierTypeDisplay } from '@/lib/supplierTypeDisplay'
 import config from '@payload-config'
 import { Fira_Code, Space_Grotesk } from 'next/font/google'
 import { notFound } from 'next/navigation'
@@ -30,7 +31,7 @@ export default async function CondominioPage({ params }: PageArgs) {
     .findByID({
       collection: 'condomini',
       id,
-      depth: 1,
+      depth: 2,
     })
     .catch(() => null)
 
@@ -73,24 +74,28 @@ export default async function CondominioPage({ params }: PageArgs) {
                     Nessun fornitore associato a questo condominio.
                   </div>
                 ) : (
-                  fornitori.map((fornitore) => (
-                    <div
-                      key={fornitore.id}
-                      className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-semibold text-slate-900 sm:text-base">
-                          {fornitore.nomeAzienda || `Fornitore #${fornitore.id}`}
-                        </p>
-                        <p className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-slate-500">
-                          {fornitore.type || 'Tipo non disponibile'}
-                        </p>
+                  fornitori.map((fornitore) => {
+                    const typeDisplay = getSupplierTypeDisplay(fornitore)
+
+                    return (
+                      <div
+                        key={fornitore.id}
+                        className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.06)]"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-slate-900 sm:text-base">
+                            {fornitore.nomeAzienda || `Fornitore #${fornitore.id}`}
+                          </p>
+                          <p className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                            {typeDisplay.name}
+                          </p>
+                        </div>
+                        <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-medium text-emerald-700">
+                          QR
+                        </span>
                       </div>
-                      <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-medium text-emerald-700">
-                        QR
-                      </span>
-                    </div>
-                  ))
+                    )
+                  })
                 )}
               </section>
 

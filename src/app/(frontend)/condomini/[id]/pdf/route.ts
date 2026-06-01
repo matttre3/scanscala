@@ -1,4 +1,5 @@
 import type { Fornitori } from '@/payload-types'
+import { getSupplierTypeDisplay } from '@/lib/supplierTypeDisplay'
 import config from '@payload-config'
 import fontkit from '@pdf-lib/fontkit'
 import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFPage } from 'pdf-lib'
@@ -18,63 +19,63 @@ type TypeStyle = {
 }
 
 const TYPE_STYLES: Record<string, TypeStyle> = {
-  elettricista: {
+  amber: {
     accent: [245, 158, 11],
     icon: [146, 64, 14],
     iconBg: [254, 243, 199],
     chipBg: [255, 251, 235],
     chipText: [146, 64, 14],
   },
-  'impresa edile': {
+  orange: {
     accent: [249, 115, 22],
     icon: [154, 52, 18],
     iconBg: [255, 237, 213],
     chipBg: [255, 247, 237],
     chipText: [154, 52, 18],
   },
-  idraulico: {
+  blue: {
     accent: [59, 130, 246],
     icon: [30, 64, 175],
     iconBg: [219, 234, 254],
     chipBg: [239, 246, 255],
     chipText: [30, 64, 175],
   },
-  ascensorista: {
+  violet: {
     accent: [139, 92, 246],
     icon: [91, 33, 182],
     iconBg: [237, 233, 254],
     chipBg: [245, 243, 255],
     chipText: [91, 33, 182],
   },
-  manutentore: {
+  emerald: {
     accent: [16, 185, 129],
     icon: [6, 95, 70],
     iconBg: [209, 250, 229],
     chipBg: [236, 253, 245],
     chipText: [6, 95, 70],
   },
-  caldaista: {
+  red: {
     accent: [239, 68, 68],
     icon: [153, 27, 27],
     iconBg: [254, 226, 226],
     chipBg: [254, 242, 242],
     chipText: [153, 27, 27],
   },
-  spurghi: {
+  sky: {
     accent: [14, 165, 233],
     icon: [3, 105, 161],
     iconBg: [224, 242, 254],
     chipBg: [240, 249, 255],
     chipText: [3, 105, 161],
   },
-  fabbro: {
+  slate: {
     accent: [100, 116, 139],
     icon: [51, 65, 85],
     iconBg: [226, 232, 240],
     chipBg: [241, 245, 249],
     chipText: [51, 65, 85],
   },
-  amministratore: {
+  teal: {
     accent: [15, 118, 110],
     icon: [17, 94, 89],
     iconBg: [204, 251, 241],
@@ -93,9 +94,9 @@ const DEFAULT_STYLE: TypeStyle = {
 
 const toRgb = ([r, g, b]: RGB) => rgb(r / 255, g / 255, b / 255)
 
-const getTypeStyle = (supplierType?: string | null): TypeStyle => {
-  if (!supplierType) return DEFAULT_STYLE
-  return TYPE_STYLES[supplierType.trim().toLowerCase()] ?? DEFAULT_STYLE
+const getTypeStyle = (color?: string | null): TypeStyle => {
+  if (!color) return DEFAULT_STYLE
+  return TYPE_STYLES[color.trim().toLowerCase()] ?? DEFAULT_STYLE
 }
 
 const truncateText = (value: string, font: PDFFont, size: number, maxWidth: number): string => {
@@ -172,15 +173,15 @@ const drawSegment = (
 
 const drawTypeIcon = (
   page: PDFPage,
-  supplierType: string | null | undefined,
+  iconName: string | null | undefined,
   centerX: number,
   centerY: number,
   color: ReturnType<typeof rgb>,
 ) => {
-  const iconType = supplierType?.trim().toLowerCase() ?? ''
+  const iconType = iconName?.trim().toLowerCase() ?? ''
 
   switch (iconType) {
-    case 'elettricista': {
+    case 'bolt': {
       drawSegment(page, centerX - 3.6, centerY + 4.7, centerX - 0.2, centerY + 1.1, color)
       drawSegment(page, centerX - 0.2, centerY + 1.1, centerX - 1.5, centerY + 1.1, color)
       drawSegment(page, centerX - 1.5, centerY + 1.1, centerX + 3.7, centerY - 4.8, color)
@@ -188,7 +189,7 @@ const drawTypeIcon = (
       return
     }
 
-    case 'impresa edile': {
+    case 'building': {
       page.drawRectangle({
         borderColor: color,
         borderWidth: 1.1,
@@ -205,7 +206,7 @@ const drawTypeIcon = (
       return
     }
 
-    case 'idraulico': {
+    case 'droplet': {
       drawSegment(page, centerX - 4.4, centerY + 3.4, centerX + 1.2, centerY + 3.4, color)
       drawSegment(page, centerX + 1.2, centerY + 3.4, centerX + 1.2, centerY - 1.7, color)
       drawSegment(page, centerX + 1.2, centerY - 1.7, centerX + 4.4, centerY - 1.7, color)
@@ -226,7 +227,7 @@ const drawTypeIcon = (
       return
     }
 
-    case 'ascensorista': {
+    case 'elevator': {
       page.drawRectangle({
         borderColor: color,
         borderWidth: 1.1,
@@ -243,7 +244,7 @@ const drawTypeIcon = (
       return
     }
 
-    case 'manutentore': {
+    case 'wrench': {
       drawSegment(page, centerX - 4.3, centerY - 4.3, centerX + 4.3, centerY + 4.3, color, 1.25)
       drawSegment(page, centerX - 4.3, centerY + 4.3, centerX + 4.3, centerY - 4.3, color, 1.25)
       page.drawCircle({ color, size: 1.1, x: centerX - 4.3, y: centerY - 4.3 })
@@ -251,7 +252,7 @@ const drawTypeIcon = (
       return
     }
 
-    case 'caldaista': {
+    case 'flame': {
       page.drawRectangle({
         borderColor: color,
         borderWidth: 1.1,
@@ -274,7 +275,7 @@ const drawTypeIcon = (
       return
     }
 
-    case 'spurghi': {
+    case 'drain': {
       page.drawRectangle({
         borderColor: color,
         borderWidth: 1.1,
@@ -308,7 +309,7 @@ const drawTypeIcon = (
       return
     }
 
-    case 'fabbro': {
+    case 'key': {
       page.drawCircle({
         borderColor: color,
         borderWidth: 1.1,
@@ -322,13 +323,39 @@ const drawTypeIcon = (
       return
     }
 
-    case 'amministratore': {
+    case 'shield': {
       drawSegment(page, centerX - 5.2, centerY + 3.8, centerX, centerY + 6, color)
       drawSegment(page, centerX, centerY + 6, centerX + 5.2, centerY + 3.8, color)
       drawSegment(page, centerX - 5.2, centerY - 4.4, centerX + 5.2, centerY - 4.4, color)
       drawSegment(page, centerX - 3, centerY - 4.4, centerX - 3, centerY + 3, color, 1)
       drawSegment(page, centerX, centerY - 4.4, centerX, centerY + 3, color, 1)
       drawSegment(page, centerX + 3, centerY - 4.4, centerX + 3, centerY + 3, color, 1)
+      return
+    }
+
+    case 'broom': {
+      drawSegment(page, centerX - 5, centerY + 5, centerX + 4, centerY - 4, color, 1.2)
+      drawSegment(page, centerX - 2.8, centerY - 5, centerX + 5.2, centerY + 3, color, 1)
+      drawSegment(page, centerX - 4.5, centerY - 2.8, centerX - 1.6, centerY - 5.7, color, 1)
+      drawSegment(page, centerX - 1.8, centerY - 0.1, centerX + 1, centerY - 2.9, color, 1)
+      return
+    }
+
+    case 'tree': {
+      drawSegment(page, centerX, centerY - 5.5, centerX, centerY - 1.5, color, 1.2)
+      drawSegment(page, centerX - 4.7, centerY - 1.5, centerX + 4.7, centerY - 1.5, color, 1.1)
+      drawSegment(page, centerX - 4, centerY - 1.5, centerX, centerY + 5.8, color, 1.1)
+      drawSegment(page, centerX, centerY + 5.8, centerX + 4, centerY - 1.5, color, 1.1)
+      drawSegment(page, centerX - 2.7, centerY + 1.2, centerX + 2.7, centerY + 1.2, color, 1)
+      return
+    }
+
+    case 'phone': {
+      drawSegment(page, centerX - 3.8, centerY + 4.5, centerX - 1.6, centerY + 2.3, color, 1.2)
+      drawSegment(page, centerX - 1.6, centerY + 2.3, centerX + 2.7, centerY - 2, color, 1.2)
+      drawSegment(page, centerX + 2.7, centerY - 2, centerX + 4.8, centerY + 0.1, color, 1.2)
+      drawSegment(page, centerX - 4.8, centerY + 2.7, centerX - 3.8, centerY + 4.5, color, 1)
+      drawSegment(page, centerX + 4.8, centerY + 0.1, centerX + 3.1, centerY - 4.5, color, 1)
       return
     }
 
@@ -507,8 +534,9 @@ export async function GET(
     const row = Math.floor(index / columns)
     const x = margin + col * (cardWidth + cardGapX)
     const y = startY - row * (cardHeight + cardGapY) - cardHeight
-    const supplierType = fornitore.type || 'Tipo non disponibile'
-    const style = getTypeStyle(fornitore.type)
+    const typeDisplay = getSupplierTypeDisplay(fornitore)
+    const supplierType = typeDisplay.name
+    const style = getTypeStyle(typeDisplay.color)
     const accentColor = toRgb(style.accent)
 
     page.drawRectangle({
@@ -555,7 +583,7 @@ export async function GET(
       y: iconCenterY,
     })
 
-    drawTypeIcon(page, fornitore.type, iconCenterX, iconCenterY, toRgb(style.icon))
+    drawTypeIcon(page, typeDisplay.icon, iconCenterX, iconCenterY, toRgb(style.icon))
 
     page.drawText(truncateText(supplierType, bodyFont, 8.3, textColumnWidth - 18), {
       color: toRgb(style.icon),

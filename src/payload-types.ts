@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    'tipologie-fornitori': TipologieFornitori;
     fornitori: Fornitori;
     condomini: Condomini;
     'payload-kv': PayloadKv;
@@ -80,6 +81,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'tipologie-fornitori': TipologieFornitoriSelect<false> | TipologieFornitoriSelect<true>;
     fornitori: FornitoriSelect<false> | FornitoriSelect<true>;
     condomini: CondominiSelect<false> | CondominiSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -164,21 +166,45 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tipologie-fornitori".
+ */
+export interface TipologieFornitori {
+  id: number;
+  nome: string;
+  icon:
+    | 'bolt'
+    | 'building'
+    | 'droplet'
+    | 'elevator'
+    | 'wrench'
+    | 'flame'
+    | 'drain'
+    | 'key'
+    | 'shield'
+    | 'broom'
+    | 'tree'
+    | 'phone'
+    | 'tag';
+  color: 'emerald' | 'amber' | 'blue' | 'violet' | 'red' | 'sky' | 'slate' | 'orange' | 'teal';
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "fornitori".
  */
 export interface Fornitori {
   id: number;
   nomeAzienda: string;
-  type:
-    | 'Elettricista'
-    | 'Impresa Edile'
-    | 'Idraulico'
-    | 'Ascensorista'
-    | 'Manutentore'
-    | 'Caldaista'
-    | 'Spurghi'
-    | 'Fabbro'
-    | 'Amministratore';
+  /**
+   * Tipologia gestibile dalla collection Tipologie Fornitori.
+   */
+  tipologia?: (number | null) | TipologieFornitori;
+  /**
+   * Campo legacy usato solo come fallback per i vecchi fornitori.
+   */
+  type?: string | null;
   contattoNome: string;
   contattoCognome: string;
   telefono: string;
@@ -234,6 +260,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'tipologie-fornitori';
+        value: number | TipologieFornitori;
       } | null)
     | ({
         relationTo: 'fornitori';
@@ -327,10 +357,23 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tipologie-fornitori_select".
+ */
+export interface TipologieFornitoriSelect<T extends boolean = true> {
+  nome?: T;
+  icon?: T;
+  color?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "fornitori_select".
  */
 export interface FornitoriSelect<T extends boolean = true> {
   nomeAzienda?: T;
+  tipologia?: T;
   type?: T;
   contattoNome?: T;
   contattoCognome?: T;

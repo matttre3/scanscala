@@ -3,6 +3,7 @@ import { Fira_Code, Space_Grotesk } from 'next/font/google'
 import { getPayload } from 'payload'
 import type { ReactNode } from 'react'
 import config from '@payload-config'
+import { getSupplierTypeDisplay } from '@/lib/supplierTypeDisplay'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,11 +32,12 @@ export default async function FornitorePage({ params }: PageArgs) {
     collection: 'fornitori',
     where: { slug: { equals: slug } },
     limit: 1,
-    depth: 0,
+    depth: 1,
   })
 
   const fornitore = docs[0]
   if (!fornitore) return notFound()
+  const typeDisplay = getSupplierTypeDisplay(fornitore)
 
   return (
     <div
@@ -59,7 +61,7 @@ export default async function FornitorePage({ params }: PageArgs) {
                   <p className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.22em] text-slate-500">
                     Scheda Fornitore
                   </p>
-                  <TypeBadge typeValue={fornitore.type} />
+                  <TypeBadge color={typeDisplay.color} iconName={typeDisplay.icon} text={typeDisplay.name} />
                 </div>
                 <h1 className="text-xl font-semibold leading-tight text-slate-900 sm:text-2xl">
                   {fornitore.nomeAzienda}
@@ -68,9 +70,10 @@ export default async function FornitorePage({ params }: PageArgs) {
 
               <section className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 <InfoCard
-                  icon={<TypeIcon typeValue={fornitore.type} />}
+                  color={typeDisplay.color}
+                  icon={<TypeIcon iconName={typeDisplay.icon} />}
                   label="Tipo"
-                  value={fornitore.type || 'Non disponibile'}
+                  value={typeDisplay.name}
                 />
                 <InfoCard
                   icon={<UserIcon />}
@@ -119,17 +122,21 @@ export default async function FornitorePage({ params }: PageArgs) {
 }
 
 function InfoCard({
+  color = 'emerald',
   icon,
   label,
   value,
 }: {
+  color?: string
   icon: ReactNode
   label: string
   value: ReactNode
 }) {
+  const colorClass = getTypeColorClass(color)
+
   return (
     <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-[0_8px_20px_rgba(15,23,42,0.06)]">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700">
+      <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${colorClass}`}>
         {icon}
       </span>
       <div className="min-w-0 space-y-0.5">
@@ -144,47 +151,78 @@ function InfoCard({
   )
 }
 
-function TypeBadge({ typeValue }: { typeValue: null | string | undefined }) {
-  const text = typeValue || 'Tipo'
+function TypeBadge({ color, iconName, text }: { color: string; iconName: string; text: string }) {
+  const colorClass = getTypeBadgeClass(color)
+
   return (
-    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
-      <TypeIcon typeValue={typeValue} />
+    <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${colorClass}`}>
+      <TypeIcon iconName={iconName} />
       <span className="max-w-28 truncate sm:max-w-none">{text}</span>
     </span>
   )
 }
 
-function TypeIcon({ typeValue }: { typeValue: null | string | undefined }) {
-  switch (typeValue) {
-    case 'Elettricista':
+function TypeIcon({ iconName }: { iconName: null | string | undefined }) {
+  switch (iconName) {
+    case 'bolt':
       return <BoltIcon />
-    case 'Impresa Edile':
-    case 'impresa edile':
+    case 'building':
       return <CraneIcon />
-    case 'Idraulico':
-    case 'idraulico':
+    case 'droplet':
       return <DropletIcon />
-    case 'Ascensorista':
-    case 'ascensorista':
+    case 'elevator':
       return <ElevatorIcon />
-    case 'Manutentore':
-    case 'manutentore':
+    case 'wrench':
       return <WrenchIcon />
-    case 'Caldaista':
-    case 'caldaia':
+    case 'flame':
       return <FlameIcon />
-    case 'Spurghi':
-    case 'spurghi':
+    case 'drain':
       return <DrainIcon />
-    case 'Fabbro':
-    case 'fabbro':
+    case 'key':
       return <KeyIcon />
-    case 'Amministratore':
-    case 'amministratore':
+    case 'shield':
       return <ShieldIcon />
+    case 'broom':
+      return <BroomIcon />
+    case 'tree':
+      return <TreeIcon />
+    case 'phone':
+      return <PhoneIcon />
     default:
       return <TagIcon />
   }
+}
+
+function getTypeColorClass(color: string) {
+  const classes: Record<string, string> = {
+    amber: 'border-amber-100 bg-amber-50 text-amber-700',
+    blue: 'border-blue-100 bg-blue-50 text-blue-700',
+    emerald: 'border-emerald-100 bg-emerald-50 text-emerald-700',
+    orange: 'border-orange-100 bg-orange-50 text-orange-700',
+    red: 'border-red-100 bg-red-50 text-red-700',
+    sky: 'border-sky-100 bg-sky-50 text-sky-700',
+    slate: 'border-slate-200 bg-slate-50 text-slate-700',
+    teal: 'border-teal-100 bg-teal-50 text-teal-700',
+    violet: 'border-violet-100 bg-violet-50 text-violet-700',
+  }
+
+  return classes[color] ?? classes.emerald
+}
+
+function getTypeBadgeClass(color: string) {
+  const classes: Record<string, string> = {
+    amber: 'border-amber-200 bg-amber-50 text-amber-700',
+    blue: 'border-blue-200 bg-blue-50 text-blue-700',
+    emerald: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+    orange: 'border-orange-200 bg-orange-50 text-orange-700',
+    red: 'border-red-200 bg-red-50 text-red-700',
+    sky: 'border-sky-200 bg-sky-50 text-sky-700',
+    slate: 'border-slate-200 bg-slate-50 text-slate-700',
+    teal: 'border-teal-200 bg-teal-50 text-teal-700',
+    violet: 'border-violet-200 bg-violet-50 text-violet-700',
+  }
+
+  return classes[color] ?? classes.emerald
 }
 
 function UserIcon() {
@@ -357,6 +395,36 @@ function ShieldIcon() {
     <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
       <path
         d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3zm0 6a2 2 0 100 4 2 2 0 000-4zm-3 8a3 3 0 016 0"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function BroomIcon() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M16 3l5 5M14 5l5 5M13 8l3 3-8 9H4l9-12zm-5 12l-4-4m2 2l3-3"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function TreeIcon() {
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M12 21v-6M8 17h8M12 3l5 7h-3l4 5H6l4-5H7l5-7z"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
