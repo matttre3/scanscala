@@ -15,6 +15,7 @@ import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const shouldRunProdMigrations = process.env.PAYLOAD_RUN_PROD_MIGRATIONS === 'true'
 
 export default buildConfig({
   admin: {
@@ -39,7 +40,7 @@ export default buildConfig({
     pool: {
       connectionString: process.env.POSTGRES_URL || '',
     },
-    prodMigrations: migrations,
+    ...(shouldRunProdMigrations ? { prodMigrations: migrations } : {}),
     push: false,
   }),
   onInit: async (payload) => {
