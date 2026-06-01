@@ -73,6 +73,11 @@ export const TipologieFornitori: CollectionConfig = {
       options: supplierTypeIconOptions,
       required: true,
       defaultValue: 'tag',
+      admin: {
+        components: {
+          Field: '/components/admin/SupplierTypeIconPicker',
+        },
+      },
     },
     {
       name: 'color',
@@ -80,6 +85,11 @@ export const TipologieFornitori: CollectionConfig = {
       options: supplierTypeColorOptions,
       required: true,
       defaultValue: 'emerald',
+      admin: {
+        components: {
+          Field: '/components/admin/SupplierTypeColorPicker',
+        },
+      },
     },
     {
       name: 'slug',
@@ -91,10 +101,30 @@ export const TipologieFornitori: CollectionConfig = {
   ],
   hooks: {
     beforeValidate: [
-      ({ data }) => {
+      async ({ data, operation, originalDoc, req }) => {
         if (!data) return data
-        if (data.nome && !data.slug) {
-          data.slug = slugify(data.nome, { lower: true, strict: true })
+        if (data.nome && (operation === 'create' || !data.slug || data.nome !== originalDoc?.nome)) {
+          const baseSlug = slugify(data.nome, { lower: true, strict: true }) || 'tipologia'
+          let candidateSlug = baseSlug
+          let suffix = 2
+
+          while (true) {
+            const existing = await req.payload.find({
+              collection: 'tipologie-fornitori',
+              where: { slug: { equals: candidateSlug } },
+              limit: 1,
+              depth: 0,
+              req,
+            })
+
+            const existingDoc = existing.docs[0]
+            if (!existingDoc || existingDoc.id === originalDoc?.id) break
+
+            candidateSlug = `${baseSlug}-${suffix}`
+            suffix += 1
+          }
+
+          data.slug = candidateSlug
         }
         return data
       },
