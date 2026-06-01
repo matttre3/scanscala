@@ -2,6 +2,7 @@
 
 import { FieldLabel, useField } from '@payloadcms/ui'
 import type { SelectFieldClientComponent } from 'payload'
+import { useEffect } from 'react'
 
 const iconOptions = [
   { label: 'Fulmine', value: 'bolt' },
@@ -22,6 +23,10 @@ const iconOptions = [
 const SupplierTypeIconPicker: SelectFieldClientComponent = ({ field, path }) => {
   const { setValue, value } = useField<string>({ path })
   const selectedValue = value || 'tag'
+
+  useEffect(() => {
+    if (!value) setValue('tag', true)
+  }, [setValue, value])
 
   return (
     <div className="supplier-type-picker">

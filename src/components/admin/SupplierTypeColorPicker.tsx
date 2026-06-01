@@ -2,6 +2,7 @@
 
 import { FieldLabel, useField } from '@payloadcms/ui'
 import type { SelectFieldClientComponent } from 'payload'
+import { useEffect } from 'react'
 
 const colorOptions = [
   { label: 'Verde', value: 'emerald' },
@@ -18,6 +19,10 @@ const colorOptions = [
 const SupplierTypeColorPicker: SelectFieldClientComponent = ({ field, path }) => {
   const { setValue, value } = useField<string>({ path })
   const selectedValue = value || 'emerald'
+
+  useEffect(() => {
+    if (!value) setValue('emerald', true)
+  }, [setValue, value])
 
   return (
     <div className="supplier-type-picker">
